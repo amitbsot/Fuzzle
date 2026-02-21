@@ -178,7 +178,7 @@
             font-size: 32px;
             font-weight: 900;
             color: white;
-            text-shadow: 2px 2px 0 #FF9F43, -1px -1px 0 #FF9F43, 1px -1px 0 #FF9F43, -1px 1px 0 #FF9F43; /* סגנון כתב מצויר */
+            text-shadow: 2px 2px 0 #FF9F43, -1px -1px 0 #FF9F43, 1px -1px 0 #FF9F43, -1px 1px 0 #FF9F43; 
             border: 2px solid rgba(255,255,255,0.4);
             border-radius: 12px;
             cursor: pointer;
@@ -253,18 +253,6 @@
             animation: popIn 0.4s ease-out;
         }
 
-        /* Ad loading simulation */
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 15px auto;
-            display: none;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -285,10 +273,10 @@
         </label>
 
         <button class="feature-btn" onclick="requestFeature('numbers')">
-            123 <span class="locked-badge" id="badge-numbers">🔒</span>
+            123 <span class="locked-badge" id="badge-numbers"> </span>
         </button>
         <button class="feature-btn" onclick="requestFeature('preview')">
-            👁️ הצצה <span class="locked-badge" id="badge-preview">🔒</span>
+            👁️ הצצה <span class="locked-badge" id="badge-preview"> </span>
         </button>
         <button class="primary" onclick="initGame()">🔄 ערבב</button>
     </div>
@@ -316,9 +304,8 @@
     <div class="modal">
         <h2>🎁 עזרה בדרך!</h2>
         <p id="ad-text">צפה בפרסומת קצרה כדי לפתוח את העזרה הזו לסיבוב הנוכחי!</p>
-        <div class="loader" id="ad-loader"></div>
         <div style="display:flex; gap:10px; width:100%;" id="ad-buttons">
-            <button class="primary" style="flex:1;" onclick="showRewardedAd()">צפה עכשיו 🎬</button>
+            <button class="primary" style="flex:1;" id="btn-watch-ad">צפה עכשיו 🎬</button>
             <button style="flex:1;" onclick="closeAdModal()">לא תודה</button>
         </div>
     </div>
@@ -329,6 +316,17 @@
 </div>
 
 <script>
+    // --- אתחול מערכת AdSense H5 ---
+    window.adsbygoogle = window.adsbygoogle || [];
+    const adBreak = function(o) { adsbygoogle.push(o); };
+    const adConfig = function(o) { adsbygoogle.push(o); };
+
+    adConfig({
+        preloadAdBreaks: 'on',
+        sound: 'off' // אם תוסיף בעתיד סאונד למשחק, שנה ל-'on'
+    });
+
+    // --- לוגיקת המשחק המקורית ---
     const defaultImages = ['IMG_7777.jpeg'];
     let currentImg = defaultImages[0] || 'https://via.placeholder.com/400x400/FFCC80/5D4037?text=Puzzle';
     let rows = 3, cols = 3;
@@ -339,7 +337,7 @@
     let timerInt;
     let isPlaying = true;
 
-    // --- Rewarded Ads Logic ---
+    // --- AdSense Rewarded Ads Logic ---
     let unlockedFeatures = { numbers: false, preview: false };
     let currentFeatureRequest = null;
 
@@ -353,12 +351,48 @@
     function requestFeature(featureType) {
         if (unlockedFeatures[featureType]) {
             executeFeature(featureType);
-        } else {
-            currentFeatureRequest = featureType;
-            let featureName = featureType === 'numbers' ? 'מספרי העזר' : 'הצצת התמונה';
-            document.getElementById('ad-text').innerText = `צפה בפרסומת קצרה כדי לפתוח את ${featureName} עד סוף הסיבוב!`;
-            document.getElementById('ad-modal').style.display = 'flex';
+            return;
         }
+
+        currentFeatureRequest = featureType;
+        let featureName = featureType === 'numbers' ? 'מספרי העזר' : 'הצצת התמונה';
+
+        // קריאה ל-AdSense להכנת פרסומת מתוגמלת
+        adBreak({
+            type: 'reward',
+            name: featureType, // נשלח לגוגל
+            beforeReward: function(showAdFn) {
+                // מציגים למשתמש את הצעת הצפייה (חלון הפופ-אפ שלנו)
+                document.getElementById('ad-text').innerText = `צפה בפרסומת קצרה כדי לפתוח את ${featureName} עד סוף הסיבוב!`;
+                document.getElementById('ad-buttons').style.display = 'flex';
+                document.getElementById('ad-modal').style.display = 'flex';
+                
+                // מגדירים את כפתור "צפה עכשיו" להפעיל את הפרסומת
+                document.getElementById('btn-watch-ad').onclick = () => {
+                    document.getElementById('ad-modal').style.display = 'none';
+                    showAdFn(); // הפעלת הפרסומת האמיתית של גוגל
+                };
+            },
+            adViewed: function() {
+                // המשתמש צפה בפרסומת עד הסוף בהצלחה
+                rewardUser(currentFeatureRequest);
+            },
+            adDismissed: function() {
+                // המשתמש סגר את הפרסומת לפני הזמן - לא מקבל פרס
+                alert('הפרסומת נסגרה לפני הסיום, ולכן העזרה לא נפתחה.');
+                currentFeatureRequest = null;
+            },
+            beforeAd: function() {
+                // עוצר את הטיימר כשהפרסומת רצה
+                isPlaying = false;
+                clearInterval(timerInt);
+            },
+            afterAd: function() {
+                // מחזיר את הטיימר כשהפרסומת נגמרת
+                isPlaying = true;
+                timerInt = setInterval(updateTime, 1000);
+            }
+        });
     }
 
     function closeAdModal() {
@@ -366,35 +400,18 @@
         currentFeatureRequest = null;
     }
 
-    function showRewardedAd() {
-        // --- כאן תכנס הקריאה האמיתית ל-AdSense H5 / AdMob שלך ---
-        // לשם הדגמה וידידותיות משתמש, יצרתי סימולציה של טעינת פרסומת ב-3 שניות
-        
-        document.getElementById('ad-buttons').style.display = 'none';
-        document.getElementById('ad-loader').style.display = 'block';
-        document.getElementById('ad-text').innerText = "טוען פרסומת... (סימולציה)";
-
-        setTimeout(() => {
-            // הפרסומת הסתיימה בהצלחה
-            rewardUser();
-        }, 2000);
-    }
-
-    function rewardUser() {
-        document.getElementById('ad-buttons').style.display = 'flex';
-        document.getElementById('ad-loader').style.display = 'none';
-        closeAdModal();
-
-        if (currentFeatureRequest) {
-            unlockedFeatures[currentFeatureRequest] = true;
-            document.getElementById(`badge-${currentFeatureRequest}`).style.display = 'none';
-            executeFeature(currentFeatureRequest);
+    function rewardUser(featureType) {
+        if (featureType) {
+            unlockedFeatures[featureType] = true;
+            document.getElementById(`badge-${featureType}`).style.display = 'none';
+            executeFeature(featureType);
+            currentFeatureRequest = null;
         }
     }
 
     function executeFeature(featureType) {
         if (featureType === 'numbers') {
-            document.getElementById('board').classList.toggle('show-numbers');
+            document.getElementById('board').classList.add('show-numbers');
         } else if (featureType === 'preview') {
             document.getElementById('preview-modal').style.display = 'flex';
         }
@@ -570,59 +587,3 @@
 
     function buildGallery() {
         const gal = document.getElementById('gallery');
-        gal.innerHTML = '';
-        if(defaultImages.length === 0) return;
-        defaultImages.forEach((src) => {
-            const img = document.createElement('img');
-            img.src = src;
-            img.className = 'gallery-item';
-            if (src === currentImg) img.classList.add('active');
-            img.onerror = () => { img.src = 'https://via.placeholder.com/65x65/FFCC80/5D4037?text=Error'; };
-            img.onclick = () => selectImage(src, img);
-            gal.appendChild(img);
-        });
-    }
-
-    function updateGallerySelection() {
-        const items = document.querySelectorAll('.gallery-item');
-        items.forEach(img => {
-            if (img.getAttribute('src') === currentImg) {
-                img.classList.add('active');
-                img.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-            } else {
-                img.classList.remove('active');
-            }
-        });
-    }
-
-    function selectImage(src, el) {
-        document.querySelectorAll('.gallery-item').forEach(x => x.classList.remove('active'));
-        el.classList.add('active');
-        currentImg = src;
-        initGame();
-    }
-
-    document.getElementById('upload').onchange = function(e) {
-        const file = e.target.files[0];
-        if(!file) return;
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-            const src = ev.target.result;
-            const img = document.createElement('img');
-            img.src = src;
-            img.className = 'gallery-item active';
-            img.onclick = () => selectImage(src, img);
-            
-            const gal = document.getElementById('gallery');
-            document.querySelectorAll('.gallery-item').forEach(x => x.classList.remove('active'));
-            gal.insertBefore(img, gal.firstChild);
-            
-            currentImg = src;
-            initGame();
-        };
-        reader.readAsDataURL(file);
-    };
-</script>
-
-</body>
-</html>
