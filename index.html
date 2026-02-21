@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- הוספנו data-adbreak-test="on" כדי שתוכל לראות פרסומות טסט גם בסביבת פיתוח -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7832188543711021" crossorigin="anonymous" data-adbreak-test="on"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7832188543711021" crossorigin="anonymous"></script>
     <title>פאזל הזזה</title>
     <style>
         :root {
-            var(--primary): #FF9F43;
-            --primary: #FF9F43;
+            /* עיצוב ידידותי למשפחה - צבעים רכים ושמחים */
+            --primary: #FF9F43; /* כתום שמח */
             --primary-shadow: #E67E22;
-            --bg-gradient: linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%);
-            --board-frame: #FFF9C4;
-            --text-color: #5D4037;
+            --bg-gradient: linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%); /* תכלת שמיים עדין */
+            --board-frame: #FFF9C4; /* צהוב פסטלי למסגרת */
+            --text-color: #5D4037; /* חום רך במקום שחור נוקשה */
             --btn-radius: 25px;
         }
 
@@ -65,7 +64,7 @@
         .gallery-item {
             width: 65px;
             height: 65px;
-            border-radius: 18px;
+            border-radius: 18px; /* יותר עגול וידידותי */
             object-fit: cover;
             opacity: 0.6;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -81,7 +80,7 @@
             box-shadow: 0 8px 15px rgba(255, 159, 67, 0.3);
         }
 
-        /* --- Controls & Buttons --- */
+        /* --- Controls & Buttons (Bubbly Style) --- */
         .controls {
             display: flex;
             justify-content: center;
@@ -124,6 +123,7 @@
         .file-btn { background: #eef2f5; }
         input[type="file"] { display: none; }
 
+        /* Feature Icons with lock status */
         .feature-btn { position: relative; }
         .locked-badge {
             position: absolute;
@@ -178,7 +178,7 @@
             font-size: 32px;
             font-weight: 900;
             color: white;
-            text-shadow: 2px 2px 0 #FF9F43, -1px -1px 0 #FF9F43, 1px -1px 0 #FF9F43, -1px 1px 0 #FF9F43;
+            text-shadow: 2px 2px 0 #FF9F43, -1px -1px 0 #FF9F43, 1px -1px 0 #FF9F43, -1px 1px 0 #FF9F43; /* סגנון כתב מצויר */
             border: 2px solid rgba(255,255,255,0.4);
             border-radius: 12px;
             cursor: pointer;
@@ -253,6 +253,7 @@
             animation: popIn 0.4s ease-out;
         }
 
+        /* Ad loading simulation */
         .loader {
             border: 4px solid #f3f3f3;
             border-top: 4px solid var(--primary);
@@ -328,18 +329,6 @@
 </div>
 
 <script>
-    // --- אתחול מערכת הפרסומות H5 של גוגל ---
-    window.adsbygoogle = window.adsbygoogle || [];
-    window.adBreak = window.adConfig = function(o) { adsbygoogle.push(o); };
-    
-    adConfig({
-        preloadAdBreaks: 'on',
-        onReady: () => {
-            console.log("מערכת הפרסומות של גוגל מוכנה!");
-        }
-    });
-    // ----------------------------------------
-
     const defaultImages = ['IMG_7777.jpeg'];
     let currentImg = defaultImages[0] || 'https://via.placeholder.com/400x400/FFCC80/5D4037?text=Puzzle';
     let rows = 3, cols = 3;
@@ -350,7 +339,7 @@
     let timerInt;
     let isPlaying = true;
 
-    // --- לוגיקת פרסומות מתוגמלות ---
+    // --- Rewarded Ads Logic ---
     let unlockedFeatures = { numbers: false, preview: false };
     let currentFeatureRequest = null;
 
@@ -377,55 +366,25 @@
         currentFeatureRequest = null;
     }
 
-    function resetAdUI() {
-        document.getElementById('ad-buttons').style.display = 'flex';
-        document.getElementById('ad-loader').style.display = 'none';
-        if (currentFeatureRequest) {
-            let featureName = currentFeatureRequest === 'numbers' ? 'מספרי העזר' : 'הצצת התמונה';
-            document.getElementById('ad-text').innerText = `צפה בפרסומת קצרה כדי לפתוח את ${featureName} עד סוף הסיבוב!`;
-        }
-    }
-
     function showRewardedAd() {
-        // שינוי ממשק משתמש בזמן טעינה
+        // --- כאן תכנס הקריאה האמיתית ל-AdSense H5 / AdMob שלך ---
+        // לשם הדגמה וידידותיות משתמש, יצרתי סימולציה של טעינת פרסומת ב-3 שניות
+        
         document.getElementById('ad-buttons').style.display = 'none';
         document.getElementById('ad-loader').style.display = 'block';
-        document.getElementById('ad-text').innerText = "טוען פרסומת...";
+        document.getElementById('ad-text').innerText = "טוען פרסומת... (סימולציה)";
 
-        // קריאה ל-API האמיתי של גוגל
-        adBreak({
-            type: 'reward',
-            name: 'unlock_feature',
-            beforeReward: function(showAdFn) {
-                // הפרסומת מוכנה - מציגים אותה
-                showAdFn();
-            },
-            adDismissed: function() {
-                // המשתמש סגר את הפרסומת באמצע
-                alert("יש לצפות בפרסומת עד סופה כדי לקבל את העזרה.");
-            },
-            adViewed: function() {
-                // המשתמש צפה בפרסומת בהצלחה!
-                rewardUser();
-            },
-            adBreakDone: function(placementInfo) {
-                // פונקציה זו רצה תמיד בסיום (בין אם צפה, סגר או שהייתה שגיאה)
-                resetAdUI();
-                
-                // אם גוגל לא מצאו פרסומת להציג כרגע
-                if(placementInfo.breakStatus === 'notReady' || placementInfo.breakStatus === 'timeout') {
-                    alert("אין פרסומת זמינה כרגע. נסה שוב מאוחר יותר.");
-                    closeAdModal();
-                } else if (placementInfo.breakStatus === 'error') {
-                    alert("שגיאה בטעינת הפרסומת.");
-                    closeAdModal();
-                }
-            }
-        });
+        setTimeout(() => {
+            // הפרסומת הסתיימה בהצלחה
+            rewardUser();
+        }, 2000);
     }
 
     function rewardUser() {
+        document.getElementById('ad-buttons').style.display = 'flex';
+        document.getElementById('ad-loader').style.display = 'none';
         closeAdModal();
+
         if (currentFeatureRequest) {
             unlockedFeatures[currentFeatureRequest] = true;
             document.getElementById(`badge-${currentFeatureRequest}`).style.display = 'none';
@@ -440,7 +399,7 @@
             document.getElementById('preview-modal').style.display = 'flex';
         }
     }
-    // --- סוף לוגיקת פרסומות ---
+    // --- End Rewarded Ads Logic ---
 
     const board = document.getElementById('board');
     const diffSel = document.getElementById('difficulty');
@@ -462,7 +421,7 @@
         clearInterval(timerInt);
         timerInt = setInterval(updateTime, 1000);
 
-        resetFeatures();
+        resetFeatures(); // נועל את העזרים בכל משחק חדש
 
         const val = diffSel.value;
         if (val === '4-5') { rows = 5; cols = 4; }
