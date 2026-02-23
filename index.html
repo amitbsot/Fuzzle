@@ -257,333 +257,117 @@
 </head>
 <body>
 
-<header>
-    <div class="gallery-scroller" id="gallery"></div>
+    <!-- Ad Above Puzzle -->
+    <ins class="adsbygoogle"
+         style="display:block;"
+         data-ad-client="ca-pub-7832188543711021"
+         data-ad-slot="YOUR_AD_SLOT_ID_ABOVE_PUZZLE"
+         data-ad-format="auto"></ins>
+    
+    <header>
 
-    <div class="controls">
-        <select id="difficulty">
-            <option value="3" selected>3x3 (קל)</option>
-            <option value="4">4x4 (רגיל)</option>
-            <option value="4-5">4x5 (אתגר)</option>
-        </select>
+        <div class="gallery-scroller" id="gallery"></div>
 
-        <label class="file-btn">
-            📷 תמונה שלי
-            <input type="file" id="upload" accept="image/*">
-        </label>
+        <div class="controls">
+            <select id="difficulty">
+                <option value="3" selected>3x3 (קל)</option>
+                <option value="4">4x4 (רגיל)</option>
+                <option value="4-5">4x5 (אתגר)</option>
+            </select>
 
-        <button class="feature-btn" onclick="requestFeature('numbers')">
-            123 <span class="locked-badge" id="badge-numbers"> </span>
-        </button>
-        <button class="feature-btn" onclick="requestFeature('preview')">
-            👁️ הצצה <span class="locked-badge" id="badge-preview"> </span>
-        </button>
-        <button class="primary" onclick="initGame()">🔄 ערבב</button>
+            <label class="file-btn">
+                📷 תמונה שלי
+                <input type="file" id="upload" accept="image/*">
+            </label>
+
+            <!-- Ad inside 123 button -->
+            <button class="feature-btn" onclick="requestFeature('numbers')">
+                123
+                <span class="locked-badge" id="badge-numbers"> </span>
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:120px;height:30px;"
+                     data-ad-client="ca-pub-7832188543711021"
+                     data-ad-slot="YOUR_AD_SLOT_ID_FOR_123_BUTTON"></ins>
+            </button>
+
+            <!-- Ad inside Peek button -->
+            <button class="feature-btn" onclick="requestFeature('preview')">
+                👁️ הצצה
+                <span class="locked-badge" id="badge-preview"> </span>
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:120px;height:30px;"
+                     data-ad-client="ca-pub-7832188543711021"
+                     data-ad-slot="YOUR_AD_SLOT_ID_FOR_PEEK_BUTTON"></ins>
+            </button>
+
+            <button class="primary" onclick="initGame()">🔄 ערבב</button>
+        </div>
+        
+        <!-- Ad Below Puzzle -->
+        <div>
+            <ins class="adsbygoogle"
+                style="display:block;"
+                data-ad-client="ca-pub-7832188543711021"
+                data-ad-slot="YOUR_AD_SLOT_ID_BELOW_PUZZLE"
+                data-ad-format="auto"></ins>
+        </div>
+    </header>
+
+    <div id="game-area">
+        <div id="board"></div>
     </div>
 
-    <div class="stats">
-        <span>⏱️ <span id="timer">00:00</span></span>
-        <span>👣 <span id="moves">0</span></span>
-    </div>
-</header>
-
-<div id="game-area">
-    <div id="board"></div>
-</div>
-
-<div id="win-modal" class="overlay">
-    <div class="modal">
-        <h2>🎉 כל הכבוד!</h2>
-        <p>פתרת את הפאזל ב-<b id="final-moves"></b> צעדים.</p>
-        <img id="win-image" src="" alt="תמונה פתורה">
-        <button class="primary" style="width: 100%; padding: 14px;" onclick="playRandomNewGame()">משחק חדש 🎈</button>
-    </div>
-</div>
-
-<div id="ad-modal" class="overlay">
-    <div class="modal">
-        <h2>🎁 עזרה בדרך!</h2>
-        <p id="ad-text">צפה בפרסומת קצרה כדי לפתוח את העזרה הזו לסיבוב הנוכחי!</p>
-        <div style="display:flex; gap:10px; width:100%;" id="ad-buttons">
-            <button class="primary" style="flex:1;" id="btn-watch-ad">צפה עכשיו 🎬</button>
-            <button style="flex:1;" onclick="closeAdModal()">לא תודה</button>
+    <div id="win-modal" class="overlay">
+        <div class="modal">
+            <h2>🎉 כל הכבוד!</h2>
+            <p>פתרת את הפאזל ב-<b id="final-moves"></b> צעדים.</p>
+            <img id="win-image" src="" alt="תמונה פתורה">
+            <button class="primary" style="width: 100%; padding: 14px;" onclick="playRandomNewGame()">משחק חדש 🎈</button>
         </div>
     </div>
-</div>
 
-<div id="preview-modal" class="overlay" onclick="this.style.display='none'">
-    <img id="preview-img" src="">
-</div>
+    <div id="ad-modal" class="overlay">
+        <div class="modal">
+            <h2>🎁 עזרה בדרך!</h2>
+            <p id="ad-text">צפה בפרסומת קצרה כדי לפתוח את העזרה הזו לסיבוב הנוכחי!</p>
+            <div style="display:flex; gap:10px; width:100%;" id="ad-buttons">
+                <button class="primary" style="flex:1;" id="btn-watch-ad">צפה עכשיו 🎬</button>
+                <button style="flex:1;" onclick="closeAdModal()">לא תודה</button>
+            </div>
+        </div>
+    </div>
 
-<script>
-    // --- אתחול מערכת AdSense H5 ---
-    window.adsbygoogle = window.adsbygoogle || [];
-    const adBreak = function(o) { adsbygoogle.push(o); };
-    const adConfig = function(o) { adsbygoogle.push(o); };
+    <div id="preview-modal" class="overlay" onclick="this.style.display='none'">
+        <img id="preview-img" src="">
+    </div>
 
-    adConfig({
-        preloadAdBreaks: 'on',
-        sound: 'off' // אם תוסיף בעתיד סאונד למשחק, שנה ל-'on'
-    });
+    <script>
+        // Initialize AdSense
+        window.adsbygoogle = window.adsbygoogle || [];
+        (adsbygoogle = window.adsbygoogle || []).push({});
 
-    // --- לוגיקת המשחק המקורית ---
-    const defaultImages = ['IMG_7777.jpeg'];
-    let currentImg = defaultImages[0] || 'https://via.placeholder.com/400x400/FFCC80/5D4037?text=Puzzle';
-    let rows = 3, cols = 3;
-    let tiles = [];
-    let empty = { r: 2, c: 2 };
-    let moves = 0;
-    let time = 0;
-    let timerInt;
-    let isPlaying = true;
-
-    // --- AdSense Rewarded Ads Logic ---
-    let unlockedFeatures = { numbers: false, preview: false };
-    let currentFeatureRequest = null;
-
-    function resetFeatures() {
-        unlockedFeatures = { numbers: false, preview: false };
-        document.getElementById('badge-numbers').style.display = 'block';
-        document.getElementById('badge-preview').style.display = 'block';
-        document.getElementById('board').classList.remove('show-numbers');
-    }
-
-    function requestFeature(featureType) {
-        if (unlockedFeatures[featureType]) {
-            executeFeature(featureType);
-            return;
-        }
-
-        currentFeatureRequest = featureType;
-        let featureName = featureType === 'numbers' ? 'מספרי העזר' : 'הצצת התמונה';
-
-        // קריאה ל-AdSense להכנת פרסומת מתוגמלת
-        adBreak({
-            type: 'reward',
-            name: featureType, // נשלח לגוגל
-            beforeReward: function(showAdFn) {
-                // מציגים למשתמש את הצעת הצפייה (חלון הפופ-אפ שלנו)
-                document.getElementById('ad-text').innerText = `צפה בפרסומת קצרה כדי לפתוח את ${featureName} עד סוף הסיבוב!`;
-                document.getElementById('ad-buttons').style.display = 'flex';
-                document.getElementById('ad-modal').style.display = 'flex';
-                
-                // מגדירים את כפתור "צפה עכשיו" להפעיל את הפרסומת
-                document.getElementById('btn-watch-ad').onclick = () => {
-                    document.getElementById('ad-modal').style.display = 'none';
-                    showAdFn(); // הפעלת הפרסומת האמיתית של גוגל
-                };
-            },
-            adViewed: function() {
-                // המשתמש צפה בפרסומת עד הסוף בהצלחה
-                rewardUser(currentFeatureRequest);
-            },
-            adDismissed: function() {
-                // המשתמש סגר את הפרסומת לפני הזמן - לא מקבל פרס
-                alert('הפרסומת נסגרה לפני הסיום, ולכן העזרה לא נפתחה.');
-                currentFeatureRequest = null;
-            },
-            beforeAd: function() {
-                // עוצר את הטיימר כשהפרסומת רצה
-                isPlaying = false;
-                clearInterval(timerInt);
-            },
-            afterAd: function() {
-                // מחזיר את הטיימר כשהפרסומת נגמרת
-                isPlaying = true;
-                timerInt = setInterval(updateTime, 1000);
-            }
+        adConfig({
+            preloadAdBreaks: 'on',
+            sound: 'off' // אם תוסיף בעתיד סאונד למשחק, שנה ל-'on'
         });
-    }
 
-    function closeAdModal() {
-        document.getElementById('ad-modal').style.display = 'none';
-        currentFeatureRequest = null;
-    }
+        // --- לוגיקת המשחק המקורית ---
 
-    function rewardUser(featureType) {
-        if (featureType) {
-            unlockedFeatures[featureType] = true;
-            document.getElementById(`badge-${featureType}`).style.display = 'none';
-            executeFeature(featureType);
-            currentFeatureRequest = null;
+        const defaultImages = ['IMG_7777.jpeg'];
+        let currentImg = defaultImages[0] || 'https://via.placeholder.com/400x400/FFCC80/5D4037?text=Puzzle';
+        let rows = 3, cols = 3;
+        let tiles = [];
+        let empty = { r: 2, c: 2 };
+        let moves = 0;
+        let time = 0;
+        let timerInt;
+        let isPlaying = true;
+
+        const resetFeatures = () => {
+            document.getElementById('badge-numbers').style.display = 'block';
+            document.getElementById('badge-preview').style.display = 'block';
+            document.getElementById('board').classList.remove('show-numbers');
         }
-    }
 
-    function executeFeature(featureType) {
-        if (featureType === 'numbers') {
-            document.getElementById('board').classList.add('show-numbers');
-        } else if (featureType === 'preview') {
-            document.getElementById('preview-modal').style.display = 'flex';
-        }
-    }
-    // --- End Rewarded Ads Logic ---
-
-    const board = document.getElementById('board');
-    const diffSel = document.getElementById('difficulty');
-    
-    window.onload = () => {
-        buildGallery();
-        initGame();
-    };
-
-    diffSel.onchange = initGame;
-
-    function initGame() {
-        moves = 0;
-        time = 0;
-        isPlaying = true;
-        document.getElementById('moves').innerText = '0';
-        document.getElementById('timer').innerText = '00:00';
-        document.getElementById('win-modal').style.display = 'none';
-        clearInterval(timerInt);
-        timerInt = setInterval(updateTime, 1000);
-
-        resetFeatures(); // נועל את העזרים בכל משחק חדש
-
-        const val = diffSel.value;
-        if (val === '4-5') { rows = 5; cols = 4; }
-        else { rows = parseInt(val); cols = parseInt(val); }
-
-        createBoard();
-        setTimeout(shuffle, 150);
-    }
-
-    function createBoard() {
-        board.innerHTML = '';
-        tiles = [];
-        
-        const w = board.clientWidth;
-        const h = w * (rows / cols);
-        board.style.height = h + 'px';
-        
-        const tileW = 100 / cols;
-        const tileH = 100 / rows;
-
-        for(let r=0; r<rows; r++) {
-            tiles[r] = [];
-            for(let c=0; c<cols; c++) {
-                if(r===rows-1 && c===cols-1) {
-                    empty = {r, c};
-                    tiles[r][c] = null;
-                    continue;
-                }
-                
-                const t = document.createElement('div');
-                t.className = 'tile';
-                t.style.width = tileW + '%';
-                t.style.height = tileH + '%';
-                t.style.left = (c * tileW) + '%';
-                t.style.top = (r * tileH) + '%';
-                t.style.backgroundImage = `url('${currentImg}')`;
-                
-                t.style.backgroundSize = `${cols*100}% ${rows*100}%`;
-                t.style.backgroundPosition = `${(c/(cols-1))*100}% ${(r/(rows-1))*100}%`;
-                
-                const num = r*cols + c + 1;
-                t.innerHTML = `<span>${num}</span>`;
-                t.dataset.r = r;
-                t.dataset.c = c;
-                t.dataset.val = num;
-
-                const moveHandler = (e) => {
-                    if(e.type === 'touchend') e.preventDefault();
-                    tryMove(parseInt(t.dataset.r), parseInt(t.dataset.c));
-                };
-                t.addEventListener('mousedown', moveHandler);
-                t.addEventListener('touchstart', moveHandler);
-
-                tiles[r][c] = t;
-                board.appendChild(t);
-            }
-        }
-        document.getElementById('preview-img').src = currentImg;
-    }
-
-    function tryMove(r, c) {
-        if(!isPlaying) return;
-        const dist = Math.abs(empty.r - r) + Math.abs(empty.c - c);
-        if(dist === 1) {
-            swap(r, c);
-            moves++;
-            document.getElementById('moves').innerText = moves;
-            checkWin();
-        }
-    }
-
-    function swap(r, c) {
-        const t = tiles[r][c];
-        t.style.left = (empty.c * (100/cols)) + '%';
-        t.style.top = (empty.r * (100/rows)) + '%';
-        
-        t.dataset.r = empty.r;
-        t.dataset.c = empty.c;
-        
-        tiles[empty.r][empty.c] = t;
-        tiles[r][c] = null;
-        
-        empty = {r, c};
-    }
-
-    function shuffle() {
-        let last = {r:-1, c:-1};
-        for(let i=0; i<150; i++) {
-            const neighbors = [];
-            if(empty.r > 0) neighbors.push({r:empty.r-1, c:empty.c});
-            if(empty.r < rows-1) neighbors.push({r:empty.r+1, c:empty.c});
-            if(empty.c > 0) neighbors.push({r:empty.r, c:empty.c-1});
-            if(empty.c < cols-1) neighbors.push({r:empty.r, c:empty.c+1});
-
-            const valid = neighbors.filter(n => !(n.r === last.r && n.c === last.c));
-            const choice = valid[Math.floor(Math.random() * valid.length)] || neighbors[0];
-
-            swap(choice.r, choice.c);
-            last = {r: empty.r, c: empty.c};
-        }
-        moves = 0;
-        document.getElementById('moves').innerText = '0';
-    }
-
-    function checkWin() {
-        let count = 1;
-        for(let r=0; r<rows; r++) {
-            for(let c=0; c<cols; c++) {
-                if(r===rows-1 && c===cols-1) return win();
-                if(!tiles[r][c]) return;
-                if(parseInt(tiles[r][c].dataset.val) !== count++) return;
-            }
-        }
-    }
-
-    function win() {
-        isPlaying = false;
-        clearInterval(timerInt);
-        document.getElementById('final-moves').innerText = moves;
-        document.getElementById('win-image').src = currentImg;
-        setTimeout(() => {
-            document.getElementById('win-modal').style.display = 'flex';
-        }, 300);
-    }
-
-    function playRandomNewGame() {
-        document.getElementById('win-modal').style.display = 'none';
-        if (defaultImages.length > 1) {
-            let nextImg;
-            do {
-                const randomIndex = Math.floor(Math.random() * defaultImages.length);
-                nextImg = defaultImages[randomIndex];
-            } while (nextImg === currentImg);
-            currentImg = nextImg;
-            updateGallerySelection();
-        }
-        initGame();
-    }
-
-    function updateTime() {
-        time++;
-        const m = Math.floor(time/60).toString().padStart(2,'0');
-        const s = (time%60).toString().padStart(2,'0');
-        document.getElementById('timer').innerText = `${m}:${s}`;
-    }
-
-    function buildGallery() {
-        const gal = document.getElementById('gallery');
+        const adBreak = function setupAdFunctionality(ad) {
+                     state.handlePush(ad); }
