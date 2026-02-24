@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7832188543711021" crossorigin="anonymous"></script>
+    
     <title>פאזל הזזה</title>
+    
     <style>
         :root {
-            /* עיצוב ידידותי למשפחה - צבעים רכים ושמחים */
-            --primary: #FF9F43; /* כתום שמח */
+            --primary: #FF9F43; 
             --primary-shadow: #E67E22;
-            --bg-gradient: linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%); /* תכלת שמיים עדין */
-            --board-frame: #FFF9C4; /* צהוב פסטלי למסגרת */
-            --text-color: #5D4037; /* חום רך במקום שחור נוקשה */
+            --bg-gradient: linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%);
+            --board-frame: #FFF9C4;
+            --text-color: #5D4037;
             --btn-radius: 25px;
+            --radius-md: 16px;
         }
 
         * {
@@ -22,18 +25,68 @@
             -webkit-user-select: none;
             touch-action: manipulation;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            margin: 0;
-            padding: 0;
             background: var(--bg-gradient);
-            height: 100vh;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        /* --- Layout --- */
+        .main-layout {
+            display: flex;
+            width: 100%;
+            max-width: 1400px;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 10px;
+            gap: 20px;
+        }
+
+        .game-column {
+            width: 100%;
+            max-width: 450px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            gap: 12px;
+        }
+
+        /* --- Ads Layout (Narrow Banners) --- */
+        .ad-sidebar {
+            display: none; 
+            width: 160px;
+            height: 600px;
+            background: rgba(255,255,255,0.4);
+            border-radius: var(--radius-md);
+            position: sticky;
+            top: 20px;
+            justify-content: center;
+            align-items: center;
             overflow: hidden;
-            color: var(--text-color);
+        }
+
+        .ad-mobile {
+            width: 100%;
+            height: 50px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        @media (min-width: 1024px) {
+            .ad-sidebar { display: flex; }
+            .ad-mobile { display: none; }
         }
 
         /* --- Header & Gallery --- */
@@ -43,12 +96,11 @@
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            z-index: 10;
+            border-radius: 30px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
+            gap: 12px;
+            z-index: 10;
         }
 
         .gallery-scroller {
@@ -62,233 +114,153 @@
         .gallery-scroller::-webkit-scrollbar { display: none; }
 
         .gallery-item {
-            width: 65px;
-            height: 65px;
-            border-radius: 18px; /* יותר עגול וידידותי */
-            object-fit: cover;
-            opacity: 0.6;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: all 0.3s bounce;
-            flex-shrink: 0;
-            border: 3px solid transparent;
+            width: 65px; height: 65px; border-radius: 18px; object-fit: cover;
+            opacity: 0.6; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s bounce;
+            flex-shrink: 0; border: 3px solid transparent; cursor: pointer;
+            pointer-events: auto; /* שיפור: מניעת תקלות גרירה */
+            -webkit-user-drag: none; /* שיפור: מניעת גרירת התמונה בדפדפן */
+        }
+        .gallery-item.active { opacity: 1; border-color: #FF9F43; transform: scale(1.1) translateY(-2px); box-shadow: 0 8px 15px rgba(255, 159, 67, 0.3); }
+
+        /* כפתור העלאת תמונה מתוך הגלריה */
+        .upload-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #fff5f2;
+            border: 3px dashed #FF9F43;
+            color: #FF9F43;
+            opacity: 1;
+        }
+        .upload-box:active { transform: scale(0.95); }
+        .upload-box svg { width: 28px; height: 28px; }
+        .upload-box input { display: none; }
+
+        /* --- Collapsible Controls --- */
+        .toggle-menu-btn {
+            background: transparent;
+            border: none;
+            color: #795548;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            padding: 5px;
+            box-shadow: none;
+            width: 100%;
         }
         
-        .gallery-item.active {
-            opacity: 1;
-            border-color: var(--primary);
-            transform: scale(1.1) translateY(-2px);
-            box-shadow: 0 8px 15px rgba(255, 159, 67, 0.3);
+        #controls-wrapper {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.3s ease;
         }
-
-        /* --- Controls & Buttons (Bubbly Style) --- */
-        .controls {
+        #controls-wrapper.open {
+            grid-template-rows: 1fr;
+        }
+        
+        .controls-inner {
+            overflow: hidden;
             display: flex;
             justify-content: center;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
+            padding: 0 5px;
+        }
+        #controls-wrapper.open .controls-inner {
+            padding-bottom: 10px;
         }
 
-        select, button, .file-btn {
-            padding: 10px 18px;
-            border-radius: var(--btn-radius);
-            border: none;
-            background: #fff;
-            box-shadow: 0 4px 0px #D7CCC8;
-            font-size: 15px;
-            font-weight: bold;
-            color: var(--text-color);
-            cursor: pointer;
-            transition: all 0.1s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        button:active, .file-btn:active, select:active {
-            transform: translateY(4px);
-            box-shadow: 0 0px 0px transparent;
-        }
-
-        button.primary {
-            background-color: var(--primary);
-            color: white;
-            box-shadow: 0 4px 0px var(--primary-shadow);
-            font-size: 16px;
-        }
-        button.primary:active {
-            box-shadow: 0 0px 0px transparent;
-        }
-
-        .file-btn { background: #eef2f5; }
-        input[type="file"] { display: none; }
-
-        /* Feature Icons with lock status */
+        select, button { padding: 8px 14px; border-radius: var(--btn-radius); border: none; background: #fff; box-shadow: 0 4px 0px #D7CCC8; font-size: 14px; font-weight: bold; color: var(--text-color); cursor: pointer; transition: all 0.1s; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        button:active, select:active { transform: translateY(4px); box-shadow: 0 0px 0px transparent; }
+        button.primary { background-color: #FF9F43; color: white; box-shadow: 0 4px 0px var(--primary-shadow); }
+        
         .feature-btn { position: relative; }
-        .locked-badge {
-            position: absolute;
-            top: -5px; right: -5px;
-            background: #FF5252; color: white;
-            font-size: 10px; padding: 2px 5px;
-            border-radius: 10px; font-weight: bold;
-        }
+        .locked-badge { position: absolute; top: -5px; right: -5px; background: #FF5252; color: white; font-size: 10px; padding: 2px 5px; border-radius: 10px; font-weight: bold; }
 
         /* --- Stats --- */
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            font-weight: bold;
-            color: #795548;
-            font-size: 1.1rem;
-            background: rgba(255,255,255,0.7);
-            padding: 8px 25px;
-            border-radius: 25px;
-            align-self: center;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
-        }
+        .stats { display: flex; justify-content: center; gap: 30px; font-weight: bold; color: #795548; font-size: 1.1rem; background: rgba(255,255,255,0.7); padding: 8px 25px; border-radius: 25px; align-self: center; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); }
 
         /* --- Game Board --- */
-        #game-area {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            position: relative;
-            padding: 20px;
-        }
-
-        #board {
-            position: relative;
-            background: var(--board-frame);
-            border: 8px solid var(--board-frame);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1), inset 0 0 15px rgba(0,0,0,0.1);
-            width: 90vw;
-            max-width: 420px;
-        }
-
-        .tile {
-            position: absolute;
-            background-size: 100% 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 32px;
-            font-weight: 900;
-            color: white;
-            text-shadow: 2px 2px 0 #FF9F43, -1px -1px 0 #FF9F43, 1px -1px 0 #FF9F43, -1px 1px 0 #FF9F43; 
-            border: 2px solid rgba(255,255,255,0.4);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
+        #game-area { width: 100%; display: flex; justify-content: center; align-items: center; position: relative; }
+        #board { position: relative; background: var(--board-frame); border: 8px solid var(--board-frame); border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1), inset 0 0 15px rgba(0,0,0,0.1); width: 100%; max-width: 420px; aspect-ratio: 1; }
+        .tile { position: absolute; background-size: 100% 100%; display: flex; justify-content: center; align-items: center; font-size: 32px; font-weight: 900; color: white; text-shadow: 2px 2px 0 #FF9F43, -1px -1px 0 #FF9F43, 1px -1px 0 #FF9F43, -1px 1px 0 #FF9F43; border: 2px solid rgba(255,255,255,0.4); border-radius: 12px; cursor: pointer; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .tile span { display: none; z-index: 2; }
         .show-numbers .tile span { display: block; }
 
         /* --- Modals --- */
-        .overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.6);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            backdrop-filter: blur(8px);
-        }
-        
-        .modal {
-            background: white;
-            padding: 30px 25px;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
-            width: 90%;
-            max-width: 360px;
-            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border: 4px solid #FFF9C4;
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .modal h2 { 
-            color: var(--primary); 
-            margin: 0 0 10px 0; 
-            font-size: 2.2rem; 
-        }
-        
-        .modal p { 
-            font-size: 1.1rem; 
-            color: #795548; 
-            margin: 0 0 20px 0;
-            line-height: 1.4;
-        }
-
-        #win-image {
-            width: 100%;
-            max-height: 220px;
-            object-fit: cover;
-            border-radius: 16px;
-            margin-bottom: 20px;
-            border: 4px solid var(--board-frame);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
-        
-        #preview-img {
-            max-width: 90%;
-            max-height: 80%;
-            border-radius: 20px;
-            border: 6px solid white;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-            animation: popIn 0.4s ease-out;
-        }
-
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.6); display: none; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(8px); }
+        .modal { background: white; padding: 30px 25px; border-radius: 30px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.15); width: 90%; max-width: 360px; animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; flex-direction: column; align-items: center; border: 4px solid #FFF9C4; }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .modal h2 { color: #FF9F43; margin: 0 0 10px 0; font-size: 2.2rem; }
+        .modal p { font-size: 1.1rem; color: #795548; margin: 0 0 20px 0; line-height: 1.4; }
+        #win-image { width: 100%; max-height: 220px; object-fit: cover; border-radius: 16px; margin-bottom: 20px; border: 4px solid var(--board-frame); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        #preview-img { max-width: 90%; max-height: 80%; border-radius: 20px; border: 6px solid white; box-shadow: 0 15px 40px rgba(0,0,0,0.2); animation: popIn 0.4s ease-out; }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="gallery-scroller" id="gallery"></div>
+<div class="main-layout">
+    
+    <aside class="ad-sidebar">
+        <ins class="adsbygoogle" style="display:inline-block;width:160px;height:600px" data-ad-client="ca-pub-7832188543711021" data-ad-slot="YOUR_DESKTOP_RIGHT_SLOT"></ins>
+    </aside>
 
-    <div class="controls">
-        <select id="difficulty">
-            <option value="3" selected>3x3 (קל)</option>
-            <option value="4">4x4 (רגיל)</option>
-            <option value="4-5">4x5 (אתגר)</option>
-        </select>
+    <main class="game-column">
+        
+        <header>
+            <div class="gallery-scroller" id="gallery">
+            </div>
 
-        <label class="file-btn">
-            📷 תמונה שלי
-            <input type="file" id="upload" accept="image/*">
-        </label>
+            <button class="toggle-menu-btn" onclick="toggleMenu()">
+                אפשרויות ועזרה <span id="menu-icon">▼</span>
+            </button>
 
-        <button class="feature-btn" onclick="requestFeature('numbers')">
-            123 <span class="locked-badge" id="badge-numbers"> </span>
-        </button>
-        <button class="feature-btn" onclick="requestFeature('preview')">
-            👁️ הצצה <span class="locked-badge" id="badge-preview"> </span>
-        </button>
-        <button class="primary" onclick="initGame()">🔄 ערבב</button>
-    </div>
+            <div id="controls-wrapper">
+                <div class="controls-inner">
+                    <select id="difficulty">
+                        <option value="3" selected>3x3 (קל)</option>
+                        <option value="4">4x4 (רגיל)</option>
+                        <option value="4-5">4x5 (אתגר)</option>
+                    </select>
+                    <button class="feature-btn" onclick="requestFeature('numbers')">
+                        123 <span class="locked-badge" id="badge-numbers">🔒</span>
+                    </button>
+                    <button class="feature-btn" onclick="requestFeature('preview')">
+                        👁 הצצה <span class="locked-badge" id="badge-preview">🔒</span>
+                    </button>
+                    <button class="primary" onclick="initGame()">🔄 ערבב</button>
+                </div>
+            </div>
 
-    <div class="stats">
-        <span>⏱️ <span id="timer">00:00</span></span>
-        <span>👣 <span id="moves">0</span></span>
-    </div>
-</header>
+            <div class="stats">
+                <span>⏱ <span id="timer">00:00</span></span>
+                <span>👣 <span id="moves">0</span></span>
+            </div>
+        </header>
 
-<div id="game-area">
-    <div id="board"></div>
+        <div class="ad-mobile">
+            <ins class="adsbygoogle" style="display:inline-block;width:320px;height:50px" data-ad-client="ca-pub-7832188543711021" data-ad-slot="YOUR_MOBILE_TOP_SLOT"></ins>
+        </div>
+
+        <div id="game-area">
+            <div id="board"></div>
+        </div>
+
+        <div class="ad-mobile">
+            <ins class="adsbygoogle" style="display:inline-block;width:320px;height:50px" data-ad-client="ca-pub-7832188543711021" data-ad-slot="YOUR_MOBILE_BOTTOM_SLOT"></ins>
+        </div>
+
+    </main>
+
+    <aside class="ad-sidebar">
+        <ins class="adsbygoogle" style="display:inline-block;width:160px;height:600px" data-ad-client="ca-pub-7832188543711021" data-ad-slot="YOUR_DESKTOP_LEFT_SLOT"></ins>
+    </aside>
+
 </div>
 
 <div id="win-modal" class="overlay">
@@ -303,10 +275,10 @@
 <div id="ad-modal" class="overlay">
     <div class="modal">
         <h2>🎁 עזרה בדרך!</h2>
-        <p id="ad-text">צפה בפרסומת קצרה כדי לפתוח את העזרה הזו לסיבוב הנוכחי!</p>
-        <div style="display:flex; gap:10px; width:100%;" id="ad-buttons">
+        <p id="ad-text">צפה בפרסומת קצרה כדי לפתוח עזרה לסיבוב הנוכחי!</p>
+        <div style="display:flex; gap:10px; width:100%; margin-top:15px;" id="ad-buttons">
             <button class="primary" style="flex:1;" id="btn-watch-ad">צפה עכשיו 🎬</button>
-            <button style="flex:1;" onclick="closeAdModal()">לא תודה</button>
+            <button style="flex:1; padding:10px; border-radius:25px; border:none; background:#eef2f5; font-weight:bold; color:#5D4037; cursor:pointer;" onclick="closeAdModal()">לא תודה</button>
         </div>
     </div>
 </div>
@@ -316,26 +288,77 @@
 </div>
 
 <script>
-    // --- אתחול מערכת AdSense H5 ---
+    // --- הפעלת פרסומות התצוגה ---
+    window.onload = function() {
+        const ads = document.querySelectorAll('.adsbygoogle');
+        ads.forEach(() => { try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {} });
+        buildGallery();
+        initGame();
+    };
+
+    // --- אתחול מערכת AdSense H5 API ---
     window.adsbygoogle = window.adsbygoogle || [];
     const adBreak = function(o) { adsbygoogle.push(o); };
     const adConfig = function(o) { adsbygoogle.push(o); };
+    adConfig({ preloadAdBreaks: 'on', sound: 'off' });
 
-    adConfig({
-        preloadAdBreaks: 'on',
-        sound: 'off' // אם תוסיף בעתיד סאונד למשחק, שנה ל-'on'
-    });
+    // --- לוגיקת פתיחה/סגירה של תפריט האפשרויות ---
+    function toggleMenu() {
+        const wrapper = document.getElementById('controls-wrapper');
+        const icon = document.getElementById('menu-icon');
+        wrapper.classList.toggle('open');
+        icon.innerText = wrapper.classList.contains('open') ? '▲' : '▼';
+    }
 
-    // --- לוגיקת המשחק המקורית ---
-    const defaultImages = ['IMG_7777.jpeg'];
-    let currentImg = defaultImages[0] || 'https://via.placeholder.com/400x400/FFCC80/5D4037?text=Puzzle';
-    let rows = 3, cols = 3;
-    let tiles = [];
-    let empty = { r: 2, c: 2 };
-    let moves = 0;
-    let time = 0;
-    let timerInt;
-    let isPlaying = true;
+    // --- לוגיקת גלריה והעלאת תמונה ---
+    const defaultImages = [
+        'https://images.unsplash.com/photo-1596461404969-9ce205b4b3f2?w=400&q=80',
+        'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&q=80',
+        'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=400&q=80'
+    ];
+    let currentImg = defaultImages[0];
+    let rows = 3, cols = 3, tiles = [], empty = { r: 2, c: 2 };
+    let moves = 0, time = 0, timerInt, isPlaying = true;
+
+    function buildGallery() {
+        const gal = document.getElementById('gallery');
+        
+        gal.innerHTML = `
+            <label class="gallery-item upload-box" title="העלה תמונה משלך">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                <input type="file" id="upload-input" accept="image/*">
+            </label>
+        `;
+
+        defaultImages.forEach(imgSrc => {
+            const img = document.createElement('img');
+            img.src = imgSrc;
+            img.className = 'gallery-item';
+            img.setAttribute('draggable', 'false'); /* שיפור: מניעת גרירת תמונות בגלריה */
+            if(imgSrc === currentImg) img.classList.add('active');
+            img.onclick = () => {
+                currentImg = imgSrc;
+                document.querySelectorAll('.gallery-item').forEach(el => el.classList.remove('active'));
+                img.classList.add('active');
+                initGame();
+            };
+            gal.appendChild(img);
+        });
+
+        document.getElementById('upload-input').addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(event) { 
+                    currentImg = event.target.result;
+                    document.querySelectorAll('.gallery-item').forEach(el => el.classList.remove('active'));
+                    initGame(); 
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    }
 
     // --- AdSense Rewarded Ads Logic ---
     let unlockedFeatures = { numbers: false, preview: false };
@@ -343,7 +366,7 @@
 
     function resetFeatures() {
         unlockedFeatures = { numbers: false, preview: false };
-        document.getElementById('badge-numbers').style.display = 'block';
+        document.getElementById('badge-numbers').style.display = 'block'; /* תיקון: החזרת המנעול למספרים */
         document.getElementById('badge-preview').style.display = 'block';
         document.getElementById('board').classList.remove('show-numbers');
     }
@@ -357,47 +380,27 @@
         currentFeatureRequest = featureType;
         let featureName = featureType === 'numbers' ? 'מספרי העזר' : 'הצצת התמונה';
 
-        // קריאה ל-AdSense להכנת פרסומת מתוגמלת
         adBreak({
             type: 'reward',
-            name: featureType, // נשלח לגוגל
+            name: featureType,
             beforeReward: function(showAdFn) {
-                // מציגים למשתמש את הצעת הצפייה (חלון הפופ-אפ שלנו)
                 document.getElementById('ad-text').innerText = `צפה בפרסומת קצרה כדי לפתוח את ${featureName} עד סוף הסיבוב!`;
-                document.getElementById('ad-buttons').style.display = 'flex';
                 document.getElementById('ad-modal').style.display = 'flex';
-                
-                // מגדירים את כפתור "צפה עכשיו" להפעיל את הפרסומת
                 document.getElementById('btn-watch-ad').onclick = () => {
                     document.getElementById('ad-modal').style.display = 'none';
-                    showAdFn(); // הפעלת הפרסומת האמיתית של גוגל
+                    showAdFn(); 
                 };
             },
-            adViewed: function() {
-                // המשתמש צפה בפרסומת עד הסוף בהצלחה
-                rewardUser(currentFeatureRequest);
-            },
-            adDismissed: function() {
-                // המשתמש סגר את הפרסומת לפני הזמן - לא מקבל פרס
-                alert('הפרסומת נסגרה לפני הסיום, ולכן העזרה לא נפתחה.');
-                currentFeatureRequest = null;
-            },
-            beforeAd: function() {
-                // עוצר את הטיימר כשהפרסומת רצה
-                isPlaying = false;
-                clearInterval(timerInt);
-            },
-            afterAd: function() {
-                // מחזיר את הטיימר כשהפרסומת נגמרת
-                isPlaying = true;
-                timerInt = setInterval(updateTime, 1000);
-            }
+            adViewed: function() { rewardUser(currentFeatureRequest); },
+            adDismissed: function() { alert('הפרסומת נסגרה לפני הסיום, ולכן העזרה לא נפתחה.'); currentFeatureRequest = null; },
+            beforeAd: function() { isPlaying = false; clearInterval(timerInt); },
+            afterAd: function() { isPlaying = true; timerInt = setInterval(updateTime, 1000); }
         });
     }
 
-    function closeAdModal() {
-        document.getElementById('ad-modal').style.display = 'none';
-        currentFeatureRequest = null;
+    function closeAdModal() { 
+        document.getElementById('ad-modal').style.display = 'none'; 
+        currentFeatureRequest = null; 
     }
 
     function rewardUser(featureType) {
@@ -416,29 +419,20 @@
             document.getElementById('preview-modal').style.display = 'flex';
         }
     }
-    // --- End Rewarded Ads Logic ---
 
+    // --- לוגיקת משחק (יצירת הלוח, תזוזות, וניצחון) ---
     const board = document.getElementById('board');
     const diffSel = document.getElementById('difficulty');
-    
-    window.onload = () => {
-        buildGallery();
-        initGame();
-    };
-
     diffSel.onchange = initGame;
 
     function initGame() {
-        moves = 0;
-        time = 0;
-        isPlaying = true;
+        moves = 0; time = 0; isPlaying = true;
         document.getElementById('moves').innerText = '0';
         document.getElementById('timer').innerText = '00:00';
         document.getElementById('win-modal').style.display = 'none';
         clearInterval(timerInt);
         timerInt = setInterval(updateTime, 1000);
-
-        resetFeatures(); // נועל את העזרים בכל משחק חדש
+        resetFeatures();
 
         const val = diffSel.value;
         if (val === '4-5') { rows = 5; cols = 4; }
@@ -449,48 +443,32 @@
     }
 
     function createBoard() {
-        board.innerHTML = '';
-        tiles = [];
-        
-        const w = board.clientWidth;
-        const h = w * (rows / cols);
-        board.style.height = h + 'px';
-        
-        const tileW = 100 / cols;
-        const tileH = 100 / rows;
+        board.innerHTML = ''; tiles = [];
+        const tileW = 100 / cols, tileH = 100 / rows;
 
         for(let r=0; r<rows; r++) {
             tiles[r] = [];
             for(let c=0; c<cols; c++) {
-                if(r===rows-1 && c===cols-1) {
-                    empty = {r, c};
-                    tiles[r][c] = null;
-                    continue;
-                }
+                if(r===rows-1 && c===cols-1) { empty = {r, c}; tiles[r][c] = null; continue; }
                 
                 const t = document.createElement('div');
                 t.className = 'tile';
-                t.style.width = tileW + '%';
-                t.style.height = tileH + '%';
-                t.style.left = (c * tileW) + '%';
-                t.style.top = (r * tileH) + '%';
+                t.style.width = tileW + '%'; t.style.height = tileH + '%';
+                t.style.left = (c * tileW) + '%'; t.style.top = (r * tileH) + '%';
                 t.style.backgroundImage = `url('${currentImg}')`;
-                
                 t.style.backgroundSize = `${cols*100}% ${rows*100}%`;
                 t.style.backgroundPosition = `${(c/(cols-1))*100}% ${(r/(rows-1))*100}%`;
                 
                 const num = r*cols + c + 1;
                 t.innerHTML = `<span>${num}</span>`;
-                t.dataset.r = r;
-                t.dataset.c = c;
-                t.dataset.val = num;
+                t.dataset.r = r; t.dataset.c = c; t.dataset.val = num;
 
-                const moveHandler = (e) => {
-                    if(e.type === 'touchend') e.preventDefault();
-                    tryMove(parseInt(t.dataset.r), parseInt(t.dataset.c));
+                const moveHandler = (e) => { 
+                    if(e.cancelable) e.preventDefault(); /* שיפור: מניעת כפילות מגע ועכבר */
+                    tryMove(parseInt(t.dataset.r), parseInt(t.dataset.c)); 
                 };
                 t.addEventListener('mousedown', moveHandler);
-                t.addEventListener('touchstart', moveHandler);
+                t.addEventListener('touchstart', moveHandler, {passive: false});
 
                 tiles[r][c] = t;
                 board.appendChild(t);
@@ -501,32 +479,26 @@
 
     function tryMove(r, c) {
         if(!isPlaying) return;
-        const dist = Math.abs(empty.r - r) + Math.abs(empty.c - c);
-        if(dist === 1) {
+        if(Math.abs(empty.r - r) + Math.abs(empty.c - c) === 1) {
             swap(r, c);
-            moves++;
-            document.getElementById('moves').innerText = moves;
+            moves++; document.getElementById('moves').innerText = moves;
             checkWin();
         }
     }
 
     function swap(r, c) {
         const t = tiles[r][c];
-        t.style.left = (empty.c * (100/cols)) + '%';
-        t.style.top = (empty.r * (100/rows)) + '%';
-        
-        t.dataset.r = empty.r;
-        t.dataset.c = empty.c;
-        
-        tiles[empty.r][empty.c] = t;
-        tiles[r][c] = null;
-        
+        t.style.left = (empty.c * (100/cols)) + '%'; t.style.top = (empty.r * (100/rows)) + '%';
+        t.dataset.r = empty.r; t.dataset.c = empty.c;
+        tiles[empty.r][empty.c] = t; tiles[r][c] = null;
         empty = {r, c};
     }
 
     function shuffle() {
         let last = {r:-1, c:-1};
-        for(let i=0; i<150; i++) {
+        const shuffleCount = rows * cols * 20; /* שיפור: ערבוב בהתאמה לגודל הלוח */
+        
+        for(let i=0; i<shuffleCount; i++) {
             const neighbors = [];
             if(empty.r > 0) neighbors.push({r:empty.r-1, c:empty.c});
             if(empty.r < rows-1) neighbors.push({r:empty.r+1, c:empty.c});
@@ -535,12 +507,10 @@
 
             const valid = neighbors.filter(n => !(n.r === last.r && n.c === last.c));
             const choice = valid[Math.floor(Math.random() * valid.length)] || neighbors[0];
-
             swap(choice.r, choice.c);
             last = {r: empty.r, c: empty.c};
         }
-        moves = 0;
-        document.getElementById('moves').innerText = '0';
+        moves = 0; document.getElementById('moves').innerText = '0';
     }
 
     function checkWin() {
@@ -548,42 +518,27 @@
         for(let r=0; r<rows; r++) {
             for(let c=0; c<cols; c++) {
                 if(r===rows-1 && c===cols-1) return win();
-                if(!tiles[r][c]) return;
-                if(parseInt(tiles[r][c].dataset.val) !== count++) return;
+                if(!tiles[r][c] || parseInt(tiles[r][c].dataset.val) !== count++) return;
             }
         }
     }
 
     function win() {
-        isPlaying = false;
-        clearInterval(timerInt);
+        isPlaying = false; clearInterval(timerInt);
         document.getElementById('final-moves').innerText = moves;
         document.getElementById('win-image').src = currentImg;
-        setTimeout(() => {
-            document.getElementById('win-modal').style.display = 'flex';
-        }, 300);
+        setTimeout(() => { document.getElementById('win-modal').style.display = 'flex'; }, 300);
     }
 
     function playRandomNewGame() {
         document.getElementById('win-modal').style.display = 'none';
-        if (defaultImages.length > 1) {
-            let nextImg;
-            do {
-                const randomIndex = Math.floor(Math.random() * defaultImages.length);
-                nextImg = defaultImages[randomIndex];
-            } while (nextImg === currentImg);
-            currentImg = nextImg;
-            updateGallerySelection();
-        }
-        initGame();
+        initGame(); 
     }
 
     function updateTime() {
         time++;
-        const m = Math.floor(time/60).toString().padStart(2,'0');
-        const s = (time%60).toString().padStart(2,'0');
-        document.getElementById('timer').innerText = `${m}:${s}`;
+        document.getElementById('timer').innerText = `${Math.floor(time/60).toString().padStart(2,'0')}:${(time%60).toString().padStart(2,'0')}`;
     }
-
-    function buildGallery() {
-        const gal = document.getElementById('gallery');
+</script>
+</body>
+</html>
