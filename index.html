@@ -336,7 +336,7 @@
             const img = document.createElement('img');
             img.src = imgSrc;
             img.className = 'gallery-item';
-            img.setAttribute('draggable', 'false'); /* שיפור: מניעת גרירת תמונות בגלריה */
+            img.setAttribute('draggable', 'false'); 
             if(imgSrc === currentImg) img.classList.add('active');
             img.onclick = () => {
                 currentImg = imgSrc;
@@ -360,13 +360,13 @@
         });
     }
 
-    // --- AdSense Rewarded Ads Logic ---
+    // --- AdSense Rewarded Ads Logic (מעודכן) ---
     let unlockedFeatures = { numbers: false, preview: false };
     let currentFeatureRequest = null;
 
     function resetFeatures() {
         unlockedFeatures = { numbers: false, preview: false };
-        document.getElementById('badge-numbers').style.display = 'block'; /* תיקון: החזרת המנעול למספרים */
+        document.getElementById('badge-numbers').style.display = 'block'; 
         document.getElementById('badge-preview').style.display = 'block';
         document.getElementById('board').classList.remove('show-numbers');
     }
@@ -380,22 +380,46 @@
         currentFeatureRequest = featureType;
         let featureName = featureType === 'numbers' ? 'מספרי העזר' : 'הצצת התמונה';
 
-        adBreak({
-            type: 'reward',
-            name: featureType,
-            beforeReward: function(showAdFn) {
-                document.getElementById('ad-text').innerText = `צפה בפרסומת קצרה כדי לפתוח את ${featureName} עד סוף הסיבוב!`;
-                document.getElementById('ad-modal').style.display = 'flex';
-                document.getElementById('btn-watch-ad').onclick = () => {
-                    document.getElementById('ad-modal').style.display = 'none';
-                    showAdFn(); 
-                };
-            },
-            adViewed: function() { rewardUser(currentFeatureRequest); },
-            adDismissed: function() { alert('הפרסומת נסגרה לפני הסיום, ולכן העזרה לא נפתחה.'); currentFeatureRequest = null; },
-            beforeAd: function() { isPlaying = false; clearInterval(timerInt); },
-            afterAd: function() { isPlaying = true; timerInt = setInterval(updateTime, 1000); }
-        });
+        // מציגים את החלון באופן עצמאי, ללא המתנה לגוגל
+        document.getElementById('ad-text').innerText = `צפה בפרסומת קצרה כדי לפתוח את ${featureName} עד סוף הסיבוב!`;
+        document.getElementById('ad-modal').style.display = 'flex';
+        
+        document.getElementById('btn-watch-ad').onclick = () => {
+            document.getElementById('ad-modal').style.display = 'none';
+            playAd(featureType);
+        };
+    }
+
+    function playAd(featureType) {
+        let adSuccessfullyCalled = false;
+
+        try {
+            adBreak({
+                type: 'reward',
+                name: featureType,
+                adViewed: function() { 
+                    adSuccessfullyCalled = true; 
+                    rewardUser(featureType); 
+                },
+                adDismissed: function() { 
+                    adSuccessfullyCalled = true; 
+                    alert('הפרסומת נסגרה לפני הסיום, ולכן העזרה לא נפתחה.'); 
+                    currentFeatureRequest = null; 
+                },
+                beforeAd: function() { isPlaying = false; clearInterval(timerInt); },
+                afterAd: function() { isPlaying = true; timerInt = setInterval(updateTime, 1000); }
+            });
+        } catch (e) {
+            console.error("AdSense API error:", e);
+        }
+
+        // גיבוי לבדיקות: אם AdSense לא עובד (למשל כי אתה מריץ מקומית במחשב), נאפשר לפתוח בכל זאת אחרי שנייה
+        setTimeout(() => {
+            if (!adSuccessfullyCalled) {
+                console.log("AdSense did not fire. Unlocking feature automatically for testing.");
+                rewardUser(featureType);
+            }
+        }, 1000);
     }
 
     function closeAdModal() { 
@@ -420,7 +444,7 @@
         }
     }
 
-    // --- לוגיקת משחק (יצירת הלוח, תזוזות, וניצחון) ---
+    // --- לוגיקת משחק ---
     const board = document.getElementById('board');
     const diffSel = document.getElementById('difficulty');
     diffSel.onchange = initGame;
@@ -464,7 +488,7 @@
                 t.dataset.r = r; t.dataset.c = c; t.dataset.val = num;
 
                 const moveHandler = (e) => { 
-                    if(e.cancelable) e.preventDefault(); /* שיפור: מניעת כפילות מגע ועכבר */
+                    if(e.cancelable) e.preventDefault(); 
                     tryMove(parseInt(t.dataset.r), parseInt(t.dataset.c)); 
                 };
                 t.addEventListener('mousedown', moveHandler);
@@ -496,7 +520,7 @@
 
     function shuffle() {
         let last = {r:-1, c:-1};
-        const shuffleCount = rows * cols * 20; /* שיפור: ערבוב בהתאמה לגודל הלוח */
+        const shuffleCount = rows * cols * 20; 
         
         for(let i=0; i<shuffleCount; i++) {
             const neighbors = [];
