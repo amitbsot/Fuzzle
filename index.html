@@ -3,20 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="שחקו עכשיו בפאזל הזזה קלאסי! משחק חשיבה מהנה לילדים ולכל המשפחה. פתחו את החשיבה המרחבית, העלו תמונות משלכם ונסו לפתור את הפאזל במינימום צעדים.">
     
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7832188543711021" crossorigin="anonymous"></script>
     
     <title>פאזל הזזה</title>
     
+    <!-- גופן מעוגל וילדותי -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --primary: #FF9F43; 
-            --primary-shadow: #E67E22;
-            --bg-gradient: linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%);
-            --board-frame: #FFF9C4;
-            --text-color: #5D4037;
-            --btn-radius: 25px;
-            --radius-md: 16px;
+            /* פלטת צבעים ייחודית לפאזל - סגול, ורוד, טורקיז */
+            --bg-color: #a855f7; /* סגול תוסס */
+            --bg-stripe: #c084fc; /* סגול בהיר יותר לפסים */
+            --border-color: #312e81; /* כחול אינדיגו עמוק במקום שחור לקווי המתאר */
+            --card-bg: #ffffff;
+            --btn-primary: #f43f5e; /* ורוד פוקסיה */
+            --btn-primary-hover: #e11d48;
+            --btn-secondary: #2dd4bf; /* טורקיז חמוד לשאר הכפתורים */
+            --btn-secondary-hover: #14b8a6;
+            --board-frame: #fde047; /* מסגרת הלוח צהובה */
+            --board-bg: #e0e7ff; /* רקע פנימי של הלוח */
         }
 
         * {
@@ -24,18 +32,92 @@
             user-select: none;
             -webkit-user-select: none;
             touch-action: manipulation;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Rubik', sans-serif;
             margin: 0;
             padding: 0;
         }
 
         body {
-            background: var(--bg-gradient);
+            /* רקע פסים אלכסוניים במקום נקודות לבידול */
+            background-color: var(--bg-color);
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 25px,
+                var(--bg-stripe) 25px,
+                var(--bg-stripe) 50px
+            );
             min-height: 100vh;
             display: flex;
-            justify-content: center;
-            color: var(--text-color);
+            flex-direction: column;
+            align-items: center;
+            color: var(--border-color);
             overflow-x: hidden;
+        }
+
+        /* --- Portal Header & Footer --- */
+        .portal-header {
+            width: 100%;
+            background: var(--border-color); /* כחול אינדיגו עמוק כמו המסגרות */
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .portal-header .logo {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--board-frame); /* צהוב */
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .portal-header .back-link {
+            background: var(--btn-primary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1rem;
+            transition: all 0.2s;
+            border: 2px solid white;
+            box-shadow: -2px 3px 0px 0px rgba(255,255,255,0.3);
+        }
+
+        .portal-header .back-link:hover {
+            transform: translateY(-2px);
+            background: var(--btn-primary-hover);
+            box-shadow: -2px 5px 0px 0px rgba(255,255,255,0.4);
+        }
+
+        .portal-footer {
+            width: 100%;
+            background: var(--border-color);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: auto; /* דוחף את הפוטר לתחתית העמוד */
+            font-size: 1rem;
+            border-top: 4px solid var(--board-frame);
+        }
+        
+        .portal-footer a {
+            color: var(--btn-secondary);
+            text-decoration: none;
+            font-weight: 800;
+        }
+
+        .portal-footer a:hover {
+            text-decoration: underline;
         }
 
         /* --- Layout --- */
@@ -45,26 +127,28 @@
             max-width: 1400px;
             justify-content: center;
             align-items: flex-start;
-            padding: 10px;
+            padding: 15px 10px;
             gap: 20px;
         }
 
         .game-column {
             width: 100%;
-            max-width: 450px;
+            max-width: 500px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
+            gap: 20px;
         }
 
         /* --- Ads Layout --- */
         .ad-sidebar {
             display: none; 
-            width: 160px;
+            width: 120px; /* רוחב מינימלי מחמיר כדי לא להעמיס */
             height: 600px;
-            background: rgba(255,255,255,0.4);
-            border-radius: var(--radius-md);
+            background: rgba(255,255,255,0.9);
+            border: 4px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: -5px 5px 0px 0px var(--border-color);
             position: sticky;
             top: 20px;
             justify-content: center;
@@ -74,9 +158,13 @@
 
         .ad-mobile {
             width: 100%;
+            height: 50px; /* גובה מינימלי קשיח כדי למנוע דחיקת תוכן */
             min-height: 50px;
-            background: rgba(255,255,255,0.4);
-            border-radius: 8px;
+            max-height: 50px;
+            background: rgba(255,255,255,0.9);
+            border: 3px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: -3px 3px 0px 0px var(--border-color);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -89,74 +177,97 @@
             .ad-mobile { display: none; }
         }
 
-        /* --- Header & Gallery --- */
-        header {
+        /* --- Header & Cards --- */
+        header, .stats {
             width: 100%;
-            padding: 15px 10px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border-radius: 30px;
+            padding: 18px;
+            background: var(--card-bg);
+            border: 4px solid var(--border-color);
+            border-radius: 28px;
+            box-shadow: -6px 8px 0px 0px var(--border-color);
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
             z-index: 10;
         }
 
+        /* --- Gallery --- */
         .gallery-scroller {
             display: flex;
-            gap: 12px;
+            gap: 15px;
             overflow-x: auto;
-            padding: 5px;
+            padding: 5px 5px 15px 5px; 
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
         }
         .gallery-scroller::-webkit-scrollbar { display: none; }
 
         .gallery-item {
-            width: 65px; height: 65px; border-radius: 18px; object-fit: cover;
-            opacity: 0.6; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s bounce;
-            flex-shrink: 0; border: 3px solid transparent; cursor: pointer;
+            width: 75px; height: 75px; 
+            border-radius: 20px;
+            object-fit: cover;
+            border: 3px solid var(--border-color);
+            box-shadow: -3px 4px 0px 0px var(--border-color);
+            transition: all 0.2s;
+            flex-shrink: 0; 
+            cursor: pointer;
             pointer-events: auto;
             -webkit-user-drag: none;
+            opacity: 0.7;
         }
-        .gallery-item.active { opacity: 1; border-color: #FF9F43; transform: scale(1.1) translateY(-2px); box-shadow: 0 8px 15px rgba(255, 159, 67, 0.3); }
+        .gallery-item:hover {
+            transform: translateY(-2px);
+        }
+        .gallery-item.active { 
+            opacity: 1; 
+            border-color: var(--btn-primary); 
+            border-width: 4px;
+            transform: translateY(-4px); 
+            box-shadow: -5px 6px 0px 0px var(--border-color); 
+        }
 
         .upload-box {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: #fff5f2;
-            border: 3px dashed #FF9F43;
-            color: #FF9F43;
+            background: var(--btn-secondary);
+            color: var(--border-color);
             opacity: 1;
         }
-        .upload-box:active { transform: scale(0.95); }
-        .upload-box svg { width: 28px; height: 28px; }
+        .upload-box:active { 
+            transform: translateY(4px) translateX(-4px); 
+            box-shadow: 0px 0px 0px 0px var(--border-color); 
+        }
+        .upload-box svg { width: 34px; height: 34px; font-weight: bold; }
         .upload-box input { display: none; }
 
-        /* --- Collapsible Controls --- */
+        /* --- Controls & Buttons --- */
         .toggle-menu-btn {
-            background: transparent;
-            border: none;
-            color: #795548;
-            font-size: 14px;
-            font-weight: bold;
+            background: #f1f5f9;
+            border: 4px dashed var(--border-color); /* קו מקווקו לבידול מהראשי */
+            border-radius: 20px;
+            color: var(--border-color);
+            font-size: 16px;
+            font-weight: 900;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 5px;
-            padding: 5px;
-            box-shadow: none;
+            gap: 8px;
+            padding: 12px;
             width: 100%;
+            transition: all 0.1s;
+        }
+        .toggle-menu-btn:active {
+            transform: scale(0.98);
+            background: #e2e8f0;
         }
         
         #controls-wrapper {
             display: grid;
             grid-template-rows: 0fr;
-            transition: grid-template-rows 0.3s ease;
+            transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         #controls-wrapper.open {
             grid-template-rows: 1fr;
@@ -166,42 +277,247 @@
             overflow: hidden;
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
             padding: 0 5px;
         }
         #controls-wrapper.open .controls-inner {
-            padding-bottom: 10px;
+            padding-top: 10px;
+            padding-bottom: 5px;
         }
 
-        select, button { padding: 8px 14px; border-radius: var(--btn-radius); border: none; background: #fff; box-shadow: 0 4px 0px #D7CCC8; font-size: 14px; font-weight: bold; color: var(--text-color); cursor: pointer; transition: all 0.1s; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        button:active, select:active { transform: translateY(4px); box-shadow: 0 0px 0px transparent; }
-        button.primary { background-color: #FF9F43; color: white; box-shadow: 0 4px 0px var(--primary-shadow); }
+        select, button:not(.toggle-menu-btn) { 
+            padding: 10px 18px; 
+            border-radius: 18px; 
+            border: 4px solid var(--border-color); 
+            background: var(--btn-secondary); 
+            box-shadow: -3px 4px 0px 0px var(--border-color); 
+            font-size: 16px; 
+            font-weight: 800; 
+            color: var(--border-color); 
+            cursor: pointer; 
+            transition: all 0.1s; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+        }
+        
+        button:not(.toggle-menu-btn):active, select:active { 
+            transform: translateY(4px) translateX(-3px); 
+            box-shadow: 0px 0px 0px 0px var(--border-color); 
+        }
+        
+        button.primary { 
+            background-color: var(--btn-primary); 
+            color: white; 
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.4);
+        }
         
         .feature-btn { position: relative; }
-        .locked-badge { position: absolute; top: -5px; right: -5px; background: #FF5252; color: white; font-size: 10px; padding: 2px 5px; border-radius: 10px; font-weight: bold; }
+        .locked-badge { 
+            position: absolute; 
+            top: -10px; 
+            right: -10px; 
+            background: #fde047;
+            color: var(--border-color); 
+            font-size: 13px; 
+            padding: 3px 7px; 
+            border-radius: 12px; 
+            border: 3px solid var(--border-color);
+            font-weight: 900; 
+            transform: rotate(10deg);
+        }
 
         /* --- Stats --- */
-        .stats { display: flex; justify-content: center; gap: 30px; font-weight: bold; color: #795548; font-size: 1.1rem; background: rgba(255,255,255,0.7); padding: 8px 25px; border-radius: 25px; align-self: center; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); }
+        .stats { 
+            flex-direction: row; 
+            justify-content: space-around; 
+            font-weight: 900; 
+            font-size: 1.4rem; 
+            padding: 12px 25px; 
+            border-radius: 25px; 
+            background: var(--card-bg);
+            margin-bottom: 5px;
+        }
+        .stats span { display: flex; align-items: center; gap: 8px; }
 
         /* --- Game Board --- */
         #game-area { width: 100%; display: flex; justify-content: center; align-items: center; position: relative; }
-        #board { position: relative; background: var(--board-frame); border: 8px solid var(--board-frame); border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1), inset 0 0 15px rgba(0,0,0,0.1); width: 100%; max-width: 420px; aspect-ratio: 1; }
-        .tile { position: absolute; background-size: 100% 100%; display: flex; justify-content: center; align-items: center; font-size: 32px; font-weight: 900; color: white; text-shadow: 2px 2px 0 #FF9F43, -1px -1px 0 #FF9F43, 1px -1px 0 #FF9F43, -1px 1px 0 #FF9F43; border: 2px solid rgba(255,255,255,0.4); border-radius: 12px; cursor: pointer; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        
+        #board { 
+            position: relative; 
+            background: var(--board-bg); 
+            border: 8px solid var(--board-frame);
+            border-radius: 28px; 
+            box-shadow: 
+                0 0 0 4px var(--border-color), 
+                -8px 12px 0px 4px var(--border-color), 
+                inset 0px 5px 15px rgba(0,0,0,0.15); 
+            width: 100%; 
+            max-width: 450px; 
+            aspect-ratio: 1; 
+            padding: 6px; 
+            overflow: hidden;
+        }
+        
+        .tile { 
+            position: absolute; 
+            background-size: 100% 100%; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 38px; 
+            font-weight: 900; 
+            color: white; 
+            text-shadow: 
+                -2px -2px 0 var(--border-color),  
+                 2px -2px 0 var(--border-color),
+                -2px  2px 0 var(--border-color),
+                 2px  2px 0 var(--border-color); 
+            border: 4px solid var(--card-bg); 
+            border-radius: 14px; 
+            cursor: pointer; 
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1); 
+            box-shadow: -2px 3px 0px 0px rgba(49, 46, 129, 0.5); 
+        }
+        
+        .tile:active {
+            transform: scale(0.92);
+        }
+
         .tile span { display: none; z-index: 2; }
         .show-numbers .tile span { display: block; }
 
+        /* --- SEO & Content Section (AdSense Fix) --- */
+        .seo-content {
+            width: 100%;
+            max-width: 900px;
+            margin: 20px auto 40px auto;
+            background: var(--card-bg);
+            border: 4px solid var(--border-color);
+            border-radius: 28px;
+            box-shadow: -6px 8px 0px 0px var(--border-color);
+            padding: 30px;
+            color: #334155;
+            line-height: 1.6;
+            text-align: right;
+            position: relative;
+            z-index: 10;
+        }
+
+        .seo-content h1 {
+            color: var(--border-color);
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            text-shadow: -2px 2px 0px var(--board-frame);
+        }
+
+        .seo-content h2 {
+            color: var(--bg-color);
+            font-size: 1.6rem;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            font-weight: 800;
+        }
+
+        .seo-content p {
+            font-size: 1.15rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .seo-content ul {
+            list-style-type: none;
+            padding-right: 0;
+            margin-bottom: 20px;
+        }
+        
+        .seo-content li {
+            font-size: 1.15rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+            position: relative;
+            padding-right: 35px;
+        }
+        
+        .seo-content li::before {
+            content: '🧩';
+            position: absolute;
+            right: 0;
+            top: 2px;
+        }
+
+        @media (max-width: 600px) {
+            .seo-content {
+                width: 90%;
+                margin: 20px auto 40px auto;
+                padding: 20px;
+            }
+            .seo-content h1 { font-size: 1.8rem; }
+            .seo-content h2 { font-size: 1.4rem; }
+        }
+
         /* --- Modals --- */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.6); display: none; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(8px); }
-        .modal { background: white; padding: 30px 25px; border-radius: 30px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.15); width: 90%; max-width: 360px; animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; flex-direction: column; align-items: center; border: 4px solid #FFF9C4; }
-        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        .modal h2 { color: #FF9F43; margin: 0 0 10px 0; font-size: 2.2rem; }
-        .modal p { font-size: 1.1rem; color: #795548; margin: 0 0 20px 0; line-height: 1.4; }
-        #win-image { width: 100%; max-height: 220px; object-fit: cover; border-radius: 16px; margin-bottom: 20px; border: 4px solid var(--board-frame); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        #preview-img { max-width: 90%; max-height: 80%; border-radius: 20px; border: 6px solid white; box-shadow: 0 15px 40px rgba(0,0,0,0.2); animation: popIn 0.4s ease-out; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(168, 85, 247, 0.85); display: none; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); }
+        
+        .modal { 
+            background: var(--card-bg); 
+            padding: 35px 25px; 
+            border-radius: 35px; 
+            text-align: center; 
+            box-shadow: -10px 15px 0px 0px var(--border-color); 
+            width: 90%; 
+            max-width: 400px; 
+            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            border: 6px solid var(--border-color); 
+        }
+        
+        @keyframes popIn { 0% { transform: scale(0.5) translateY(50px) rotate(-5deg); opacity: 0; } 100% { transform: scale(1) translateY(0) rotate(0); opacity: 1; } }
+        
+        .modal h2 { 
+            color: var(--border-color); 
+            margin: 0 0 15px 0; 
+            font-size: 2.8rem; 
+            font-weight: 900;
+            text-shadow: -2px 2px 0px var(--btn-secondary);
+        }
+        .modal p { font-size: 1.25rem; color: #475569; margin: 0 0 25px 0; font-weight: 600; line-height: 1.4; }
+        
+        #win-image { 
+            width: 100%; 
+            max-height: 240px; 
+            object-fit: cover; 
+            border-radius: 20px; 
+            margin-bottom: 25px; 
+            border: 5px solid var(--border-color); 
+            box-shadow: -4px 6px 0px 0px var(--border-color); 
+        }
+        
+        #preview-img { 
+            max-width: 90%; 
+            max-height: 80%; 
+            border-radius: 28px; 
+            border: 8px solid var(--border-color); 
+            box-shadow: -10px 15px 0px 0px var(--border-color); 
+            animation: popIn 0.4s ease-out; 
+        }
     </style>
 </head>
 <body>
+
+<!-- פורטל האדר -->
+<nav class="portal-header">
+    <a href="https://thinkfun.vercel.app/" class="logo">
+        🧩 Fuzzle
+    </a>
+    <a href="https://thinkfun.vercel.app/" class="back-link">
+        🏠 חזרה לפורטל
+    </a>
+</nav>
 
 <div class="main-layout">
     
@@ -243,12 +559,12 @@
                     <button class="primary" onclick="initGame()">🔄 ערבב</button>
                 </div>
             </div>
-
-            <div class="stats">
-                <span>⏱ <span id="timer">00:00</span></span>
-                <span>👣 <span id="moves">0</span></span>
-            </div>
         </header>
+
+        <div class="stats">
+            <span>⏱️ <span id="timer">00:00</span></span>
+            <span>👣 <span id="moves">0</span></span>
+        </div>
 
         <div class="ad-mobile">
             <ins class="adsbygoogle"
@@ -294,12 +610,32 @@
 
 </div>
 
+<!-- אזור תוכן טקסטואלי לקידום אתרים (SEO) ואישור אדסנס -->
+<article class="seo-content">
+    <h1>פאזל הזזה: משחק חשיבה קלאסי לילדים ולכל המשפחה</h1>
+    <p>ברוכים הבאים למשחק פאזל ההזזה (Sliding Puzzle) המוכר והאהוב! משחק רשת חינמי שנועד לאתגר את המוח, לשפר את החשיבה המרחבית ולספק שעות של הנאה ללא צורך בהורדת אפליקציה.</p>
+    
+    <h2>איך משחקים?</h2>
+    <p>החוקים פשוטים מאוד אך מצריכים תכנון וחשיבה קדימה. הלוח מחולק לאריחים המרכיבים תמונה אחת שלמה, כאשר משבצת אחת נותרת ריקה. המטרה שלכם היא להזיז את האריחים הסמוכים למשבצת הריקה אל תוך החלל הפנוי, עד שהתמונה מסודרת במלואה, במינימום צעדים ובזמן הקצר ביותר.</p>
+    
+    <h2>למה פאזל הזזה כל כך טוב להתפתחות?</h2>
+    <ul>
+        <li><strong>פיתוח חשיבה מרחבית ולוגית:</strong> המשחק דורש מהשחקן לדמיין כמה צעדים קדימה כדי להבין כיצד הזזת אריח אחד תשפיע על מיקומם של האריחים האחרים.</li>
+        <li><strong>שיפור הריכוז ופתרון בעיות:</strong> התמודדות עם אתגר מובנה מלמדת סבלנות, מיקוד במטרה ופיתוח אסטרטגיות לפתרון.</li>
+        <li><strong>מותאם אישית ויצירתי:</strong> אצלנו תוכלו לא רק לשחק בתמונות המובנות, אלא גם להעלות תמונות אישיות שלכם מהמחשב או הנייד ולהפוך אותן לפאזל באופן מיידי! זה מעולה לילדים שאוהבים להרכיב תמונות של עצמם או של חיות המחמד שלהם.</li>
+    </ul>
+
+    <h2>קצת היסטוריה על הפאזל הקלאסי</h2>
+    <p>משחק "פאזל ה-15" (או פאזל הזזה) הומצא אי שם בסוף המאה ה-19 והפך ללהיט עולמי כמעט בין לילה. הגרסה המקורית כללה 15 אריחים ממוספרים בתוך קופסה עם 16 מקומות, והאתגר היה לסדר אותם בסדר עולה. כיום, בזכות הטכנולוגיה, המשחק הקלאסי קיבל חיים חדשים עם תמונות צבעוניות ועיצוב שובב ומודרני.</p>
+    <p>התחילו לשחק עכשיו, בחרו את רמת הקושי המתאימה לכם (3x3 למתחילים, או 4x5 לאלופים), ונסו לשבור את השיא של עצמכם!</p>
+</article>
+
 <div id="win-modal" class="overlay">
     <div class="modal">
-        <h2>🎉 כל הכבוד!</h2>
-        <p>פתרת את הפאזל ב-<b id="final-moves"></b> צעדים.</p>
+        <h2>🎉 אלופים!</h2>
+        <p>פתרתם את הפאזל ב-<b id="final-moves"></b> צעדים.</p>
         <img id="win-image" src="" alt="תמונה פתורה">
-        <button class="primary" style="width: 100%; padding: 14px;" onclick="playRandomNewGame()">משחק חדש 🎈</button>
+        <button class="primary" style="width: 100%; padding: 18px; font-size: 1.3rem;" onclick="playRandomNewGame()">משחק חדש 🚀</button>
     </div>
 </div>
 
@@ -307,9 +643,9 @@
     <div class="modal">
         <h2>🎁 עזרה בדרך!</h2>
         <p id="ad-text">צפה בפרסומת קצרה כדי לקבל עזרה!</p>
-        <div style="display:flex; gap:10px; width:100%; margin-top:15px;" id="ad-buttons">
+        <div style="display:flex; gap:15px; width:100%; margin-top:20px;" id="ad-buttons">
             <button class="primary" style="flex:1;" id="btn-watch-ad">צפה עכשיו 🎬</button>
-            <button style="flex:1; padding:10px; border-radius:25px; border:none; background:#eef2f5; font-weight:bold; color:#5D4037; cursor:pointer;" onclick="closeAdModal()">לא תודה</button>
+            <button style="flex:1; background:#f1f5f9; color:var(--border-color); font-weight: bold; border: 4px solid var(--border-color); border-radius: 18px;" onclick="closeAdModal()">לא תודה</button>
         </div>
     </div>
 </div>
@@ -317,6 +653,12 @@
 <div id="preview-modal" class="overlay" onclick="this.style.display='none'">
     <img id="preview-img" src="">
 </div>
+
+<!-- פורטל פוטר -->
+<footer class="portal-footer">
+    <p>© 2026 ThinkFun - כל הזכויות שמורות.</p>
+    <p><a href="https://thinkfun.vercel.app/">בקרו בפורטל למשחקים נוספים</a></p>
+</footer>
 
 <script>
     window.onload = function() {
@@ -351,8 +693,8 @@
         
         gal.innerHTML = `
             <label class="gallery-item upload-box" title="העלה תמונה משלך">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
                 <input type="file" id="upload-input" accept="image/*">
             </label>
@@ -393,7 +735,6 @@
         currentFeatureRequest = featureType;
         let featureName = featureType === 'numbers' ? 'את מספרי העזר ל-5 שניות' : 'הצצה לתמונה הפתורה';
 
-        // מציגים תמיד את חלון הפרסומת (אין פתיחה קבועה)
         document.getElementById('ad-text').innerText = `צפה בפרסומת קצרה כדי לקבל ${featureName}!`;
         document.getElementById('ad-modal').style.display = 'flex';
         
@@ -426,7 +767,7 @@
             console.error("AdSense API error:", e);
         }
 
-        // גיבוי לבדיקות: אם AdSense לא מופעל או חסום, נאפשר לפתוח בכל זאת אחרי שנייה (לצורך טסטינג מקומי)
+        // גיבוי לבדיקות - מפעיל את הפונקציה אם אדסנס לא נטען
         setTimeout(() => {
             if (!adSuccessfullyCalled) {
                 console.log("AdSense did not fire. Unlocking feature automatically for testing.");
@@ -452,7 +793,6 @@
             const boardEl = document.getElementById('board');
             boardEl.classList.add('show-numbers');
             
-            // מסיר את המספרים לאחר 5 שניות
             setTimeout(() => {
                 boardEl.classList.remove('show-numbers');
             }, 5000);
@@ -472,7 +812,7 @@
         document.getElementById('moves').innerText = '0';
         document.getElementById('timer').innerText = '00:00';
         document.getElementById('win-modal').style.display = 'none';
-        document.getElementById('board').classList.remove('show-numbers'); // מוודא שאין מספרים בהתחלה
+        document.getElementById('board').classList.remove('show-numbers'); 
         clearInterval(timerInt);
         timerInt = setInterval(updateTime, 1000);
 
@@ -584,3 +924,6 @@
 </script>
 </body>
 </html>
+
+
+
